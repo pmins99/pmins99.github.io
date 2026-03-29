@@ -1,0 +1,381 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>오픈소스 취약점 분석 — Minseo</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<link href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css" rel="stylesheet">
+<style>
+:root {
+  --bg:       #0a0f1e;
+  --bg2:      #0f1629;
+  --bg3:      #141d35;
+  --sky:      #3b82f6;
+  --sky-soft: #1e3a6e;
+  --sky-deep: #60a5fa;
+  --ink:      #e2e8f0;
+  --ink2:     #94a3b8;
+  --ink3:     #64748b;
+  --border:   #1e2d45;
+  --display:  'Pretendard', sans-serif;
+  --sans:     'Pretendard', sans-serif;
+  --mono:     'Space Mono', monospace;
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+body {
+  background: var(--bg);
+  color: var(--ink);
+  font-family: var(--sans);
+  font-size: 15px;
+  line-height: 1.75;
+}
+
+/* NAV */
+nav {
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  z-index: 100;
+  background: rgba(10,15,30,0.92);
+  backdrop-filter: blur(16px);
+  border-bottom: 1px solid var(--border);
+  padding: 0 56px;
+  height: 62px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.nav-back {
+  font-family: var(--mono);
+  font-size: 10px;
+  color: var(--ink2);
+  text-decoration: none;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  padding: 7px 16px;
+  border-radius: 100px;
+  border: 1px solid var(--border);
+  transition: all 0.2s;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.nav-back:hover { background: var(--bg3); border-color: var(--sky-soft); color: var(--sky-deep); }
+.nav-logo {
+  font-family: var(--display);
+  font-size: 22px;
+  font-weight: 600;
+  color: var(--ink);
+  text-decoration: none;
+}
+
+/* HERO */
+.hero {
+  padding-top: 120px;
+  padding-bottom: 80px;
+  padding-left: 56px;
+  padding-right: 56px;
+  max-width: 900px;
+  margin: 0 auto;
+  border-bottom: 1px solid var(--border);
+}
+.hero-eyebrow {
+  font-family: var(--mono);
+  font-size: 10px;
+  color: var(--sky-deep);
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  margin-bottom: 20px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.hero-eyebrow::before { content: ''; width: 28px; height: 1px; background: var(--sky); }
+.hero-title {
+  font-family: var(--display);
+  font-size: clamp(36px, 5vw, 60px);
+  font-weight: 400;
+  line-height: 1.1;
+  color: var(--ink);
+  margin-bottom: 24px;
+}
+.hero-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-bottom: 32px;
+}
+.meta-chip {
+  font-family: var(--mono);
+  font-size: 10px;
+  padding: 5px 14px;
+  border-radius: 100px;
+  letter-spacing: 0.08em;
+}
+.chip-blue  { background: rgba(59,130,246,0.12); color: var(--sky-deep); border: 1px solid var(--sky-soft); }
+.chip-green { background: rgba(16,185,129,0.12); color: #34d399; border: 1px solid rgba(16,185,129,0.25); }
+.chip-gray  { background: var(--bg3); color: var(--ink2); border: 1px solid var(--border); }
+.hero-desc {
+  font-size: 16px;
+  color: var(--ink2);
+  line-height: 1.85;
+  max-width: 680px;
+}
+
+/* THUMB */
+.thumb-wrap {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 0 56px 0;
+}
+.thumb-img {
+  width: 100%;
+  aspect-ratio: 16/7;
+  background:
+    linear-gradient(rgba(59,130,246,0.06) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(59,130,246,0.06) 1px, transparent 1px),
+    linear-gradient(135deg, #0d1f3c 0%, #060e1f 100%);
+  background-size: 24px 24px, 24px 24px, 100% 100%;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 80px;
+}
+.thumb-img img { width: 100%; height: 100%; object-fit: cover; }
+.thumb-placeholder {
+  font-family: var(--mono);
+  font-size: 11px;
+  color: var(--ink3);
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+}
+
+/* CONTENT */
+.content {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 0 56px 120px;
+  display: grid;
+  grid-template-columns: 1fr 260px;
+  gap: 80px;
+  align-items: start;
+}
+.content-main h2 {
+  font-family: var(--display);
+  font-size: 22px;
+  font-weight: 500;
+  color: var(--ink);
+  margin-bottom: 16px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid var(--border);
+}
+.content-main p {
+  font-size: 15px;
+  color: var(--ink2);
+  line-height: 1.9;
+  margin-bottom: 28px;
+}
+.content-main ul {
+  list-style: none;
+  padding: 0;
+  margin-bottom: 28px;
+}
+.content-main ul li {
+  font-size: 15px;
+  color: var(--ink2);
+  line-height: 1.8;
+  padding: 6px 0;
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  align-items: baseline;
+  gap: 12px;
+}
+.content-main ul li::before {
+  content: '—';
+  color: var(--sky-deep);
+  font-family: var(--mono);
+  font-size: 11px;
+  flex-shrink: 0;
+}
+
+/* SIDEBAR */
+.sidebar {}
+.sidebar-block {
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 20px;
+  margin-bottom: 16px;
+}
+.sidebar-label {
+  font-family: var(--mono);
+  font-size: 9px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--ink3);
+  margin-bottom: 12px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid var(--border);
+}
+.sidebar-tags { display: flex; flex-wrap: wrap; gap: 7px; }
+.stag {
+  font-family: var(--mono);
+  font-size: 10px;
+  color: var(--ink2);
+  background: var(--bg3);
+  border: 1px solid var(--border);
+  padding: 4px 11px;
+  border-radius: 2px;
+}
+.stag.hl {
+  background: rgba(59,130,246,0.15);
+  border-color: var(--sky-soft);
+  color: var(--sky-deep);
+  font-weight: 700;
+}
+.sidebar-link {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  text-decoration: none;
+  color: var(--ink);
+  padding: 10px 0;
+  border-bottom: 1px solid var(--border);
+  font-size: 14px;
+  transition: color 0.2s;
+}
+.sidebar-link:last-child { border-bottom: none; }
+.sidebar-link:hover { color: var(--sky-deep); }
+.sidebar-link span { font-family: var(--mono); font-size: 11px; color: var(--ink3); }
+
+/* REVEAL */
+.reveal { opacity: 0; transform: translateY(18px); transition: opacity 0.55s ease, transform 0.55s ease; }
+.reveal.visible { opacity: 1; transform: translateY(0); }
+
+/* SCROLLBAR */
+::-webkit-scrollbar { width: 3px; }
+::-webkit-scrollbar-track { background: var(--bg); }
+::-webkit-scrollbar-thumb { background: var(--sky-soft); border-radius: 10px; }
+
+@media (max-width: 768px) {
+  nav { padding: 0 20px; }
+  .hero, .thumb-wrap, .content { padding-left: 24px; padding-right: 24px; }
+  .content { grid-template-columns: 1fr; gap: 48px; }
+}
+</style>
+</head>
+<body>
+
+<nav>
+  <a href="index.html" class="nav-back">← Back</a>
+  <a href="index.html" class="nav-logo">Minseo's Portfolio</a>
+</nav>
+
+<!-- HERO -->
+<section class="hero reveal">
+  <div class="hero-eyebrow">Project 01</div>
+  <h1 class="hero-title">오픈소스 취약점 분석</h1>
+  <div class="hero-meta">
+    <span class="meta-chip chip-blue">CVE Credit</span>
+    <span class="meta-chip chip-green">Security Research</span>
+    <span class="meta-chip chip-gray">2025.12 — 2026.02</span>
+    <span class="meta-chip chip-gray">[토스뱅크] 사이버보안 부트캠프</span>
+  </div>
+  <p class="hero-desc">
+    <!-- 프로젝트 한 줄 소개를 여기에 작성하세요 -->
+    오픈소스 CMS 프레임워크 TinaCMS의 코드베이스를 분석하여 Path Traversal 취약점(CWE-22)을 발견하고 CVE 크레딧을 취득한 보안 연구 프로젝트입니다.
+  </p>
+</section>
+
+<!-- THUMBNAIL -->
+<div class="thumb-wrap reveal">
+  <div class="thumb-img">
+    <!-- 스크린샷 있으면: <img src="gtry-thumb.png" alt="프로젝트 썸네일"> -->
+    <span class="thumb-placeholder">Project Screenshot</span>
+  </div>
+</div>
+
+<!-- CONTENT -->
+<div class="content">
+  <div class="content-main">
+
+    <div class="reveal">
+      <h2>프로젝트 개요</h2>
+      <p>
+        <!-- 프로젝트 배경 및 목적을 작성하세요 -->
+        내용 추가
+      </p>
+    </div>
+
+    <div class="reveal">
+      <h2>주요 역할 및 기여</h2>
+      <ul>
+        <li>내용 추가</li>
+        <li>내용 추가</li>
+        <li>내용 추가</li>
+      </ul>
+    </div>
+
+    <div class="reveal">
+      <h2>취약점 분석 과정</h2>
+      <p>
+        <!-- 분석 방법론, 발견 과정 등을 작성하세요 -->
+        내용 추가
+      </p>
+    </div>
+
+    <div class="reveal">
+      <h2>결과 및 성과</h2>
+      <ul>
+        <li>CVE-2026-24125 크레딧 취득</li>
+        <li>내용 추가</li>
+      </ul>
+    </div>
+
+  </div>
+
+  <!-- SIDEBAR -->
+  <aside class="sidebar">
+    <div class="sidebar-block reveal">
+      <div class="sidebar-label">Tech Stack</div>
+      <div class="sidebar-tags">
+        <span class="stag hl">CVE Credit</span>
+        <span class="stag">CWE-22</span>
+        <span class="stag">Path Traversal</span>
+        <span class="stag">Node.js</span>
+        <span class="stag">TinaCMS</span>
+      </div>
+    </div>
+
+    <div class="sidebar-block reveal">
+      <div class="sidebar-label">Links</div>
+      <a href="https://github.com/tinacms/tinacms/security/advisories/GHSA-2238-xc5r-v9hj"
+         target="_blank" class="sidebar-link">
+        CVE Advisory <span>→</span>
+      </a>
+      <a href="https://github.com/pmins99" target="_blank" class="sidebar-link">
+        GitHub <span>→</span>
+      </a>
+    </div>
+  </aside>
+</div>
+
+<script>
+const obs = new IntersectionObserver(entries => {
+  entries.forEach((e, i) => {
+    if (e.isIntersecting) {
+      setTimeout(() => e.target.classList.add('visible'), i * 80);
+      obs.unobserve(e.target);
+    }
+  });
+}, { threshold: 0.07 });
+document.querySelectorAll('.reveal').forEach(el => obs.observe(el));
+</script>
+</body>
+</html>

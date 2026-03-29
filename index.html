@@ -269,50 +269,85 @@ section:not(:first-child) { border-top: 1px solid var(--border); }
 
 /* PROJECTS */
 #projects { background: var(--bg); }
-.project-grid { display: flex; flex-direction: column; max-width: 860px; }
-.project-card {
+.proj-grid {
   display: grid;
-  grid-template-columns: 52px 1fr;
-  gap: 28px;
-  padding: 36px 0;
-  border-bottom: 1px solid var(--border);
-  align-items: start;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 20px;
+  max-width: 960px;
 }
-.project-card:first-child { border-top: 1px solid var(--border); }
-.proj-num { font-family: var(--mono); font-size: 11px; color: var(--ink3); padding-top: 4px; }
-.proj-date { font-family: var(--mono); font-size: 11px; color: var(--ink3); margin-bottom: 7px; }
-.proj-title { font-family: var(--display); font-size: 26px; font-weight: 400; color: var(--ink); margin-bottom: 4px; line-height: 1.25; }
-.proj-org  { font-family: var(--mono); font-size: 11px; color: var(--ink3); margin-bottom: 16px; }
-.proj-meta { display: flex; flex-direction: column; gap: 6px; margin-bottom: 18px; }
-.proj-meta-row { font-size: 14px; color: var(--ink2); line-height: 1.65; }
-.stack-tags { display: flex; flex-wrap: wrap; gap: 7px; margin-bottom: 20px; }
+.proj-card {
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  overflow: hidden;
+  text-decoration: none;
+  color: inherit;
+  display: block;
+  transition: border-color 0.25s, transform 0.25s, box-shadow 0.25s;
+}
+.proj-card:hover {
+  border-color: var(--sky-soft);
+  transform: translateY(-5px);
+  box-shadow: 0 12px 40px rgba(59,130,246,0.12);
+}
+.proj-thumb {
+  width: 100%;
+  aspect-ratio: 16/10;
+  background:
+    linear-gradient(rgba(59,130,246,0.06) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(59,130,246,0.06) 1px, transparent 1px),
+    linear-gradient(135deg, #0d1f3c 0%, #060e1f 100%);
+  background-size: 24px 24px, 24px 24px, 100% 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  position: relative;
+  overflow: hidden;
+}
+.proj-thumb img { width: 100%; height: 100%; object-fit: cover; position: absolute; inset: 0; }
+.proj-thumb-label {
+  font-family: var(--mono);
+  font-size: 9px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--sky-deep);
+  opacity: 0.8;
+  z-index: 1;
+}
+.proj-thumb-icon {
+  font-size: 32px;
+  z-index: 1;
+  opacity: 0.6;
+}
+.proj-card-body { padding: 16px 18px 20px; }
+.proj-card-tags { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 10px; }
 .stag {
   font-family: var(--mono);
   font-size: 10px;
   color: var(--ink2);
-  background: var(--bg2);
+  background: var(--bg3);
   border: 1px solid var(--border);
-  padding: 4px 11px;
+  padding: 3px 10px;
   border-radius: 2px;
 }
-.stag.hl { background: var(--sky); border-color: var(--sky-deep); color: var(--ink); font-weight: 700; }
-.proj-links { display: flex; gap: 10px; flex-wrap: wrap; }
-.plink {
+.stag.hl { background: rgba(59,130,246,0.15); border-color: var(--sky-soft); color: var(--sky-deep); font-weight: 700; }
+.proj-card-title {
+  font-size: 15px;
+  font-weight: 500;
+  color: var(--ink);
+  margin-bottom: 6px;
+  line-height: 1.4;
+}
+.proj-card-sub {
   font-family: var(--mono);
   font-size: 10px;
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
-  color: var(--ink);
-  background: transparent;
-  border: 1px solid var(--ink2);
-  padding: 8px 18px;
-  border-radius: 100px;
-  text-decoration: none;
-  transition: all 0.2s;
+  color: var(--ink3);
+  line-height: 1.6;
 }
-.plink:hover { background: var(--sky); border-color: var(--sky); color: var(--ink); }
-.plink.prim { background: var(--sky-deep); border-color: var(--sky-deep); color: #fff; }
-.plink.prim:hover { background: var(--sky); border-color: var(--sky); color: var(--ink); }
+@media (max-width: 1024px) { .proj-grid { grid-template-columns: repeat(2, 1fr); } }
+@media (max-width: 600px)  { .proj-grid { grid-template-columns: 1fr; } }
 
 /* CONTACT */
 #contact {
@@ -367,7 +402,7 @@ section:not(:first-child) { border-top: 1px solid var(--border); }
 /* MOBILE */
 @media (max-width: 1024px) {
   #home { grid-template-columns: 1fr; gap: 40px; padding-top: 100px; }
-  .home-right { order: -1; max-width: 260px; margin: 0 auto; }
+  .home-right { order: 1; max-width: 260px; margin: 0 auto; }
 }
 @media (max-width: 768px) {
   nav { padding: 0 20px; height: 54px; }
@@ -536,27 +571,24 @@ section:not(:first-child) { border-top: 1px solid var(--border); }
   <div class="section-eyebrow">03</div>
   <h2 class="section-title">Projects</h2>
 
-  <div class="project-grid">
-    <div class="project-card reveal">
-      <div class="proj-num">01</div>
-      <div>
-        <div class="proj-date">2025.12 — 2026.02</div>
-        <div class="proj-title">오픈소스 취약점 분석</div>
-        <div class="proj-org">[토스뱅크] 사이버보안 엔지니어 부트캠프 프로젝트</div>
-        <div class="proj-meta">
-          <div class="proj-meta-row">내용추가</div>
-        </div>
-        <div class="stack-tags">
+  <div class="proj-grid">
+
+    <a href="gtry.html" class="proj-card reveal">
+      <div class="proj-thumb">
+        <div class="proj-thumb-icon">🔍</div>
+        <div class="proj-thumb-label">Security Research</div>
+      </div>
+      <div class="proj-card-body">
+        <div class="proj-card-tags">
           <span class="stag hl">CVE Credit</span>
           <span class="stag">CWE-22</span>
+          <span class="stag">Path Traversal</span>
         </div>
-        <div class="proj-links">
-          <a href="https://github.com/tinacms/tinacms/security/advisories/GHSA-2238-xc5r-v9hj"
-             target="_blank" class="plink prim">CVE Advisory</a>
-          <a href="gtry.html" class="plink">상세보기</a>
-        </div>
+        <div class="proj-card-title">오픈소스 취약점 분석</div>
+        <div class="proj-card-sub">2025.12 — 2026.02<br>[토스뱅크] 사이버보안 부트캠프</div>
       </div>
-    </div>
+    </a>
+
   </div>
 </section>
 
