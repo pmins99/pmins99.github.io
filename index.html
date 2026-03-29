@@ -1,0 +1,1245 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>GTRY — Security Research</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #080c10;
+    --bg2: #0d1117;
+    --bg3: #111820;
+    --surface: #131c26;
+    --surface2: #1a2535;
+    --border: #1e2d3d;
+    --border2: #243447;
+    --accent: #00e5ff;
+    --accent2: #00ff88;
+    --accent3: #ff6b35;
+    --warn: #ffb700;
+    --critical: #ff3b5c;
+    --text: #e8edf3;
+    --text2: #8899aa;
+    --text3: #4a5a6a;
+    --mono: 'Space Mono', monospace;
+    --sans: 'DM Sans', sans-serif;
+    --display: 'Syne', sans-serif;
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: var(--sans);
+    font-size: 15px;
+    line-height: 1.7;
+    overflow-x: hidden;
+  }
+
+  /* ── NOISE OVERLAY ── */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
+    pointer-events: none;
+    z-index: 9999;
+    opacity: 0.4;
+  }
+
+  /* ── SCAN LINE ── */
+  body::after {
+    content: '';
+    position: fixed;
+    left: 0; right: 0;
+    height: 2px;
+    background: linear-gradient(90deg, transparent, var(--accent), transparent);
+    opacity: 0.15;
+    animation: scanline 8s linear infinite;
+    pointer-events: none;
+    z-index: 9998;
+  }
+  @keyframes scanline {
+    0% { top: -2px; }
+    100% { top: 100vh; }
+  }
+
+  /* ── NAV ── */
+  nav {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    z-index: 100;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 20px 48px;
+    background: rgba(8,12,16,0.85);
+    backdrop-filter: blur(20px);
+    border-bottom: 1px solid var(--border);
+  }
+
+  .nav-logo {
+    font-family: var(--display);
+    font-weight: 800;
+    font-size: 22px;
+    color: var(--accent);
+    letter-spacing: 0.04em;
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .nav-logo::before {
+    content: '▸';
+    font-size: 14px;
+    color: var(--accent2);
+  }
+
+  .nav-links {
+    display: flex;
+    gap: 36px;
+    list-style: none;
+  }
+  .nav-links a {
+    font-family: var(--mono);
+    font-size: 12px;
+    color: var(--text2);
+    text-decoration: none;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    transition: color 0.2s;
+    position: relative;
+  }
+  .nav-links a::after {
+    content: '';
+    position: absolute;
+    bottom: -3px; left: 0; right: 0;
+    height: 1px;
+    background: var(--accent);
+    transform: scaleX(0);
+    transition: transform 0.2s;
+  }
+  .nav-links a:hover { color: var(--accent); }
+  .nav-links a:hover::after { transform: scaleX(1); }
+
+  /* ── HERO ── */
+  .hero {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: 120px 48px 80px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .hero-grid {
+    position: absolute;
+    inset: 0;
+    background-image:
+      linear-gradient(var(--border) 1px, transparent 1px),
+      linear-gradient(90deg, var(--border) 1px, transparent 1px);
+    background-size: 60px 60px;
+    opacity: 0.25;
+    mask-image: radial-gradient(ellipse 80% 80% at 50% 50%, black, transparent);
+  }
+
+  .hero-glow {
+    position: absolute;
+    top: -200px; left: -200px;
+    width: 700px; height: 700px;
+    background: radial-gradient(circle, rgba(0,229,255,0.06) 0%, transparent 70%);
+    pointer-events: none;
+  }
+  .hero-glow2 {
+    position: absolute;
+    bottom: -100px; right: -100px;
+    width: 500px; height: 500px;
+    background: radial-gradient(circle, rgba(0,255,136,0.04) 0%, transparent 70%);
+    pointer-events: none;
+  }
+
+  .hero-content { position: relative; max-width: 900px; }
+
+  .hero-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--accent2);
+    background: rgba(0,255,136,0.08);
+    border: 1px solid rgba(0,255,136,0.2);
+    padding: 6px 14px;
+    border-radius: 2px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    margin-bottom: 28px;
+    animation: fadeUp 0.6s ease both;
+  }
+  .hero-badge::before {
+    content: '';
+    width: 6px; height: 6px;
+    border-radius: 50%;
+    background: var(--accent2);
+    animation: pulse 2s ease infinite;
+  }
+  @keyframes pulse {
+    0%, 100% { opacity: 1; transform: scale(1); }
+    50% { opacity: 0.5; transform: scale(0.8); }
+  }
+
+  .hero-title {
+    font-family: var(--display);
+    font-weight: 800;
+    font-size: clamp(52px, 8vw, 96px);
+    line-height: 1;
+    letter-spacing: -0.03em;
+    margin-bottom: 12px;
+    animation: fadeUp 0.6s 0.1s ease both;
+  }
+  .hero-title span { color: var(--accent); }
+
+  .hero-sub {
+    font-family: var(--display);
+    font-weight: 600;
+    font-size: clamp(18px, 3vw, 28px);
+    color: var(--text2);
+    margin-bottom: 28px;
+    animation: fadeUp 0.6s 0.2s ease both;
+  }
+
+  .hero-desc {
+    font-size: 16px;
+    color: var(--text2);
+    max-width: 540px;
+    line-height: 1.8;
+    margin-bottom: 48px;
+    animation: fadeUp 0.6s 0.3s ease both;
+  }
+
+  .hero-stats {
+    display: flex;
+    gap: 48px;
+    margin-bottom: 48px;
+    animation: fadeUp 0.6s 0.4s ease both;
+  }
+  .stat {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+  .stat-num {
+    font-family: var(--display);
+    font-weight: 800;
+    font-size: 36px;
+    color: var(--accent);
+    line-height: 1;
+  }
+  .stat-label {
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--text3);
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+  }
+
+  .hero-ctas {
+    display: flex;
+    gap: 16px;
+    animation: fadeUp 0.6s 0.5s ease both;
+  }
+
+  .btn-primary {
+    font-family: var(--mono);
+    font-size: 12px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--bg);
+    background: var(--accent);
+    border: none;
+    padding: 14px 28px;
+    cursor: pointer;
+    text-decoration: none;
+    transition: all 0.2s;
+    clip-path: polygon(8px 0%, 100% 0%, calc(100% - 8px) 100%, 0% 100%);
+  }
+  .btn-primary:hover {
+    background: #fff;
+    transform: translateY(-2px);
+  }
+
+  .btn-secondary {
+    font-family: var(--mono);
+    font-size: 12px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--accent);
+    background: transparent;
+    border: 1px solid var(--border2);
+    padding: 14px 28px;
+    cursor: pointer;
+    text-decoration: none;
+    transition: all 0.2s;
+  }
+  .btn-secondary:hover {
+    border-color: var(--accent);
+    background: rgba(0,229,255,0.05);
+  }
+
+  /* ── SECTION BASE ── */
+  section { padding: 100px 48px; }
+
+  .section-label {
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--accent);
+    text-transform: uppercase;
+    letter-spacing: 0.15em;
+    margin-bottom: 12px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+  .section-label::before {
+    content: '';
+    width: 32px; height: 1px;
+    background: var(--accent);
+  }
+
+  .section-title {
+    font-family: var(--display);
+    font-weight: 800;
+    font-size: clamp(32px, 5vw, 52px);
+    letter-spacing: -0.02em;
+    margin-bottom: 16px;
+    line-height: 1.1;
+  }
+
+  .section-desc {
+    color: var(--text2);
+    max-width: 560px;
+    margin-bottom: 60px;
+    font-size: 15px;
+  }
+
+  /* ── CVE HIGHLIGHT ── */
+  .cve-section {
+    background: var(--bg2);
+    border-top: 1px solid var(--border);
+    border-bottom: 1px solid var(--border);
+  }
+
+  .cve-card {
+    background: var(--surface);
+    border: 1px solid var(--border2);
+    padding: 36px;
+    position: relative;
+    overflow: hidden;
+    transition: border-color 0.3s, transform 0.3s;
+    max-width: 800px;
+    margin: 0 auto;
+  }
+  .cve-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 2px;
+    background: linear-gradient(90deg, var(--accent), var(--accent2));
+  }
+  .cve-card:hover {
+    border-color: var(--accent);
+    transform: translateY(-4px);
+  }
+
+  .cve-id {
+    font-family: var(--mono);
+    font-size: 13px;
+    color: var(--accent);
+    margin-bottom: 8px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .cve-id .badge {
+    font-size: 10px;
+    padding: 2px 8px;
+    background: rgba(0,229,255,0.1);
+    border: 1px solid rgba(0,229,255,0.3);
+    border-radius: 2px;
+    color: var(--accent);
+  }
+
+  .cve-title {
+    font-family: var(--display);
+    font-weight: 700;
+    font-size: 22px;
+    margin-bottom: 12px;
+  }
+
+  .cve-desc {
+    color: var(--text2);
+    font-size: 14px;
+    margin-bottom: 20px;
+    line-height: 1.7;
+  }
+
+  .cve-meta {
+    display: flex;
+    gap: 20px;
+    flex-wrap: wrap;
+  }
+  .meta-item {
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--text3);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .meta-item span { color: var(--text2); }
+
+  .cve-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--accent2);
+    text-decoration: none;
+    margin-top: 20px;
+    letter-spacing: 0.08em;
+    transition: gap 0.2s;
+  }
+  .cve-link:hover { gap: 12px; }
+
+  /* ── VULN GRID ── */
+  .vuln-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+    gap: 20px;
+  }
+
+  .vuln-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    padding: 28px;
+    position: relative;
+    overflow: hidden;
+    transition: all 0.3s;
+    cursor: default;
+  }
+  .vuln-card::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(135deg, rgba(0,229,255,0.03), transparent);
+    opacity: 0;
+    transition: opacity 0.3s;
+  }
+  .vuln-card:hover {
+    border-color: var(--border2);
+    transform: translateY(-3px);
+    box-shadow: 0 16px 40px rgba(0,0,0,0.4);
+  }
+  .vuln-card:hover::after { opacity: 1; }
+
+  .vuln-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 16px;
+  }
+
+  .vuln-target {
+    font-family: var(--mono);
+    font-size: 12px;
+    color: var(--text2);
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+  .vuln-target strong {
+    font-family: var(--display);
+    font-weight: 700;
+    font-size: 17px;
+    color: var(--text);
+  }
+
+  .severity {
+    font-family: var(--mono);
+    font-size: 10px;
+    letter-spacing: 0.1em;
+    padding: 4px 10px;
+    border-radius: 2px;
+    text-transform: uppercase;
+    font-weight: 700;
+  }
+  .sev-high {
+    background: rgba(255,59,92,0.12);
+    border: 1px solid rgba(255,59,92,0.3);
+    color: var(--critical);
+  }
+  .sev-medium {
+    background: rgba(255,183,0,0.1);
+    border: 1px solid rgba(255,183,0,0.25);
+    color: var(--warn);
+  }
+
+  .vuln-cwe {
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--accent);
+    margin-bottom: 10px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .vuln-cwe::before {
+    content: '';
+    width: 20px; height: 1px;
+    background: var(--accent);
+  }
+
+  .vuln-desc {
+    font-size: 13px;
+    color: var(--text2);
+    line-height: 1.6;
+    margin-bottom: 20px;
+  }
+
+  .vuln-status {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-family: var(--mono);
+    font-size: 11px;
+  }
+  .status-dot {
+    width: 6px; height: 6px;
+    border-radius: 50%;
+  }
+  .status-patched { background: var(--accent2); color: var(--accent2); }
+  .status-pending { background: var(--warn); color: var(--warn); }
+  .status-reported { background: var(--text3); color: var(--text3); }
+
+  /* ── ABOUT ── */
+  .about-section {
+    background: var(--bg2);
+    border-top: 1px solid var(--border);
+    border-bottom: 1px solid var(--border);
+  }
+
+  .about-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 80px;
+    align-items: start;
+    max-width: 1000px;
+  }
+
+  .about-text p {
+    color: var(--text2);
+    margin-bottom: 20px;
+    line-height: 1.8;
+  }
+  .about-text p strong { color: var(--text); }
+
+  .skills-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-top: 28px;
+  }
+  .skill-tag {
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--text2);
+    background: var(--surface);
+    border: 1px solid var(--border2);
+    padding: 6px 14px;
+    letter-spacing: 0.06em;
+    transition: all 0.2s;
+  }
+  .skill-tag:hover {
+    border-color: var(--accent);
+    color: var(--accent);
+  }
+
+  .timeline {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+  }
+  .timeline-item {
+    display: flex;
+    gap: 20px;
+    padding-bottom: 32px;
+    position: relative;
+  }
+  .timeline-item::before {
+    content: '';
+    position: absolute;
+    left: 15px;
+    top: 28px;
+    bottom: 0;
+    width: 1px;
+    background: var(--border2);
+  }
+  .timeline-item:last-child::before { display: none; }
+
+  .timeline-dot {
+    width: 30px; height: 30px;
+    border: 1px solid var(--border2);
+    background: var(--surface);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    font-size: 12px;
+  }
+  .timeline-dot.active {
+    border-color: var(--accent);
+    background: rgba(0,229,255,0.08);
+    color: var(--accent);
+  }
+
+  .timeline-content {}
+  .timeline-date {
+    font-family: var(--mono);
+    font-size: 10px;
+    color: var(--text3);
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    margin-bottom: 4px;
+  }
+  .timeline-title {
+    font-weight: 500;
+    color: var(--text);
+    margin-bottom: 4px;
+    font-size: 14px;
+  }
+  .timeline-body {
+    font-size: 13px;
+    color: var(--text2);
+    line-height: 1.6;
+  }
+
+  /* ── CONTACT ── */
+  .contact-inner {
+    max-width: 640px;
+  }
+
+  .contact-links {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    margin-top: 40px;
+  }
+  .contact-link {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    padding: 20px 24px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    text-decoration: none;
+    transition: all 0.2s;
+    group: true;
+  }
+  .contact-link:hover {
+    border-color: var(--accent);
+    background: rgba(0,229,255,0.04);
+    transform: translateX(6px);
+  }
+  .contact-link-icon {
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--accent);
+    width: 80px;
+    flex-shrink: 0;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+  }
+  .contact-link-text {
+    color: var(--text2);
+    font-size: 14px;
+    transition: color 0.2s;
+  }
+  .contact-link:hover .contact-link-text { color: var(--text); }
+  .contact-link-arrow {
+    margin-left: auto;
+    color: var(--text3);
+    font-family: var(--mono);
+    font-size: 14px;
+    transition: color 0.2s, transform 0.2s;
+  }
+  .contact-link:hover .contact-link-arrow {
+    color: var(--accent);
+    transform: translateX(4px);
+  }
+
+  /* ── FOOTER ── */
+  footer {
+    border-top: 1px solid var(--border);
+    padding: 32px 48px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .footer-left {
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--text3);
+    letter-spacing: 0.08em;
+  }
+  .footer-right {
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--text3);
+  }
+  .footer-right span { color: var(--accent2); }
+
+  /* ── TERMINAL BLOCK ── */
+  .terminal {
+    background: #060a0e;
+    border: 1px solid var(--border2);
+    border-radius: 4px;
+    overflow: hidden;
+    margin-top: 40px;
+    max-width: 640px;
+  }
+  .terminal-bar {
+    background: var(--surface);
+    padding: 10px 16px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    border-bottom: 1px solid var(--border);
+  }
+  .dot { width: 10px; height: 10px; border-radius: 50%; }
+  .dot-r { background: #ff5f57; }
+  .dot-y { background: #febc2e; }
+  .dot-g { background: #28c840; }
+  .terminal-title {
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--text3);
+    margin-left: 8px;
+  }
+  .terminal-body {
+    padding: 20px 24px;
+    font-family: var(--mono);
+    font-size: 12px;
+    line-height: 1.9;
+  }
+  .t-prompt { color: var(--accent2); }
+  .t-cmd { color: var(--text); }
+  .t-out { color: var(--text2); }
+  .t-highlight { color: var(--accent); }
+  .t-warn { color: var(--warn); }
+  .t-err { color: var(--critical); }
+  .t-cursor {
+    display: inline-block;
+    width: 8px; height: 14px;
+    background: var(--accent);
+    vertical-align: middle;
+    animation: blink 1s step-end infinite;
+  }
+  @keyframes blink {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0; }
+  }
+
+  /* ── ANIMATIONS ── */
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(24px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .reveal {
+    opacity: 0;
+    transform: translateY(20px);
+    transition: opacity 0.6s ease, transform 0.6s ease;
+  }
+  .reveal.visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  /* ── SCROLLBAR ── */
+  ::-webkit-scrollbar { width: 4px; }
+  ::-webkit-scrollbar-track { background: var(--bg); }
+  ::-webkit-scrollbar-thumb { background: var(--border2); }
+  ::-webkit-scrollbar-thumb:hover { background: var(--accent); }
+
+  /* ── MOBILE ── */
+  @media (max-width: 768px) {
+    nav { padding: 16px 24px; }
+    .nav-links { display: none; }
+    section, .hero { padding: 80px 24px; }
+    .hero-stats { gap: 28px; }
+    .about-grid { grid-template-columns: 1fr; gap: 48px; }
+    footer { padding: 24px; flex-direction: column; gap: 12px; text-align: center; }
+    .vuln-grid { grid-template-columns: 1fr; }
+  }
+
+  /* pending badge animation */
+  .pending-anim {
+    animation: pendingPulse 2s ease infinite;
+  }
+  @keyframes pendingPulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.5; }
+  }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <a class="nav-logo" href="#">GTRY</a>
+  <ul class="nav-links">
+    <li><a href="#cve">CVE</a></li>
+    <li><a href="#research">Research</a></li>
+    <li><a href="#about">About</a></li>
+    <li><a href="#contact">Contact</a></li>
+  </ul>
+</nav>
+
+<!-- HERO -->
+<section class="hero" id="home">
+  <div class="hero-grid"></div>
+  <div class="hero-glow"></div>
+  <div class="hero-glow2"></div>
+
+  <div class="hero-content">
+    <div class="hero-badge">Security Researcher · CVE Credit Holder</div>
+
+    <h1 class="hero-title">Breaking<br><span>Things</span><br>Responsibly.</h1>
+
+    <p class="hero-sub">오픈소스 취약점 분석 및 보안 연구</p>
+
+    <p class="hero-desc">
+      실제 운영 중인 오픈소스 CMS 및 웹서비스의 취약점을 발굴하고,
+      책임 있는 공개(Responsible Disclosure)를 통해 보안 생태계에 기여합니다.
+      CVE 크레딧 보유 및 다수 벤더 패치 반영 실적.
+    </p>
+
+    <div class="hero-stats">
+      <div class="stat">
+        <div class="stat-num">9+</div>
+        <div class="stat-label">Vulnerabilities Found</div>
+      </div>
+      <div class="stat">
+        <div class="stat-num">5</div>
+        <div class="stat-label">Open Source Targets</div>
+      </div>
+      <div class="stat">
+        <div class="stat-num">1</div>
+        <div class="stat-label">CVE Credit</div>
+      </div>
+      <div class="stat">
+        <div class="stat-num">4</div>
+        <div class="stat-label">Patched by Vendors</div>
+      </div>
+    </div>
+
+    <div class="hero-ctas">
+      <a href="#research" class="btn-primary">View Research</a>
+      <a href="#contact" class="btn-secondary">Contact</a>
+    </div>
+  </div>
+</section>
+
+<!-- CVE HIGHLIGHT -->
+<section class="cve-section" id="cve">
+  <div class="section-label">Hall of Fame</div>
+  <h2 class="section-title">CVE Credit</h2>
+  <p class="section-desc">공식 CVE 번호가 부여된 취약점 제보 실적입니다.</p>
+
+  <div class="cve-card reveal">
+    <div class="cve-id">
+      GHSA-2238-xc5r-v9hj
+      <span class="badge">CVE Credit</span>
+      <span class="badge" style="border-color:rgba(0,255,136,0.3);color:var(--accent2);background:rgba(0,255,136,0.08);">Patched</span>
+    </div>
+    <h3 class="cve-title">TinaCMS — Path Traversal via relativePath (CWE-22)</h3>
+    <p class="cve-desc">
+      TinaCMS v3.3.1의 GraphQL resolver에서 사용자 입력값인 <code style="color:var(--accent);font-family:var(--mono);font-size:12px">relativePath</code>가
+      별도 검증 없이 <code style="color:var(--accent);font-family:var(--mono);font-size:12px">path.join()</code>에 전달되는 구조.
+      <code style="color:var(--accent);font-family:var(--mono);font-size:12px">../</code> 시퀀스를 통해 허용되지 않은 서버 파일에 접근 가능한 Path Traversal 취약점을 발굴,
+      패치까지 직접 제안하여 공식 Security Advisory에 크레딧 등재.
+    </p>
+    <div class="cve-meta">
+      <div class="meta-item">Target <span>TinaCMS v3.3.1</span></div>
+      <div class="meta-item">Type <span>CWE-22 Path Traversal</span></div>
+      <div class="meta-item">Platform <span>GitHub Security Advisory</span></div>
+    </div>
+    <a href="https://github.com/tinacms/tinacms/security/advisories/GHSA-2238-xc5r-v9hj" target="_blank" class="cve-link">
+      View Advisory on GitHub →
+    </a>
+
+    <div class="terminal" style="margin-top:28px;">
+      <div class="terminal-bar">
+        <div class="dot dot-r"></div>
+        <div class="dot dot-y"></div>
+        <div class="dot dot-g"></div>
+        <span class="terminal-title">pathtraversal.poc.test.ts</span>
+      </div>
+      <div class="terminal-body">
+        <div><span class="t-prompt">// Vulnerable code</span></div>
+        <div><span class="t-err">const realPath = path.join(collection.path, relativePath);</span></div>
+        <div style="margin-top:12px"><span class="t-prompt">// Exploit</span></div>
+        <div><span class="t-warn">relativePath = "../../SAFE_OUTSIDE/poc.mdx"</span></div>
+        <div style="margin-top:12px"><span class="t-prompt">// Patch</span></div>
+        <div><span class="t-highlight">if (back.startsWith('..') || path.posix.isAbsolute(back)) {</span></div>
+        <div><span class="t-highlight">&nbsp;&nbsp;throw new Error('Invalid relativePath');</span></div>
+        <div><span class="t-highlight">}</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- RESEARCH -->
+<section id="research">
+  <div class="section-label">Vulnerability Research</div>
+  <h2 class="section-title">취약점 연구</h2>
+  <p class="section-desc">
+    오픈소스 CMS 6종을 대상으로 직접 소스코드 분석을 통해 발굴한 취약점 목록입니다.
+    모든 취약점은 책임있는 공개(Responsible Disclosure) 절차를 거쳤습니다.
+  </p>
+
+  <div class="vuln-grid">
+
+    <!-- Directus -->
+    <div class="vuln-card reveal">
+      <div class="vuln-top">
+        <div class="vuln-target">
+          <strong>Directus</strong>
+          <span>v11.14.0</span>
+        </div>
+        <span class="severity sev-high">High</span>
+      </div>
+      <div class="vuln-cwe">CWE-284 · Improper Access Control</div>
+      <p class="vuln-desc">
+        비관리자에게 filename_disk 쓰기 권한이 있을 경우, 자신의 파일 포인터를 피해자 스토리지 키로 변경 후 삭제하여 피해자 파일을 원격에서 삭제 가능.
+        데이터 손상 및 레코드-파일 불일치 유발.
+      </p>
+      <div class="vuln-status">
+        <div class="status-dot status-reported" style="background:var(--warn)"></div>
+        <span style="color:var(--warn);font-size:11px;">PR 리뷰 중 · 다음 릴리즈 반영 예정</span>
+      </div>
+    </div>
+
+    <!-- Paperless-ngx -->
+    <div class="vuln-card reveal">
+      <div class="vuln-top">
+        <div class="vuln-target">
+          <strong>Paperless-ngx</strong>
+          <span>v2.20.2</span>
+        </div>
+        <span class="severity sev-high">High</span>
+      </div>
+      <div class="vuln-cwe">CWE-79 · Stored XSS</div>
+      <p class="vuln-desc">
+        safeHtml 파이프에서 bypassSecurityTrustHtml을 사용해 Angular 기본 sanitization을 우회.
+        [innerHTML]을 통한 저장형 XSS 발생. GitHub Security 제보 후 공식 패치 완료.
+      </p>
+      <div class="vuln-status">
+        <div class="status-dot status-patched"></div>
+        <span style="color:var(--accent2);font-size:11px;">패치 완료 · Vendor Acknowledged</span>
+      </div>
+    </div>
+
+    <!-- Chatwoot XSS -->
+    <div class="vuln-card reveal">
+      <div class="vuln-top">
+        <div class="vuln-target">
+          <strong>Chatwoot</strong>
+          <span>v3.0.0 ~ v4.8.0</span>
+        </div>
+        <span class="severity sev-high">High</span>
+      </div>
+      <div class="vuln-cwe">CWE-79 · Stored DOM XSS</div>
+      <p class="vuln-desc">
+        Help Center 아티클 헤딩 텍스트가 검증 없이 HTML 속성(title)에 삽입되고 innerHTML+=으로 재해석.
+        속성 탈출 및 이벤트 핸들러 주입 가능. GitHub Security 제보 후 패치 완료.
+      </p>
+      <div class="vuln-status">
+        <div class="status-dot status-patched"></div>
+        <span style="color:var(--accent2);font-size:11px;">패치 완료 · Vendor Acknowledged</span>
+      </div>
+    </div>
+
+    <!-- Chatwoot PostMessage -->
+    <div class="vuln-card reveal">
+      <div class="vuln-top">
+        <div class="vuln-target">
+          <strong>Chatwoot</strong>
+          <span>v4.8.0</span>
+        </div>
+        <span class="severity sev-high">High</span>
+      </div>
+      <div class="vuln-cwe">CWE-346 · Origin Validation Error</div>
+      <p class="vuln-desc">
+        위젯의 postMessage 통신에서 targetOrigin="*" 및 event.origin 검증 부재.
+        세션 토큰(cw_conversation) 주입을 통한 대화 세션 고정·탈취 가능. 피해자 메시지가 공격자 대화로 노출.
+      </p>
+      <div class="vuln-status">
+        <div class="status-dot pending-anim" style="background:var(--warn)"></div>
+        <span style="color:var(--warn);font-size:11px;">회신 수령 · 패치 미완료</span>
+      </div>
+    </div>
+
+    <!-- ERPNext -->
+    <div class="vuln-card reveal">
+      <div class="vuln-top">
+        <div class="vuln-target">
+          <strong>ERPNext</strong>
+          <span>v15.91.0 ~ v15.93.1</span>
+        </div>
+        <span class="severity sev-high">High</span>
+      </div>
+      <div class="vuln-cwe">CWE-79 / CWE-918 · XSS + SSRF (복수)</div>
+      <p class="vuln-desc">
+        eval() 기반 XSS 4건(Number Card, Letter Head, Awesome Bar, Webpage Content),
+        SSRF 2건(Newsletter, Code List) 발굴. 정규식 우회 기법 포함.
+        벤더에 제보 완료, 공식 회신 대기 중.
+      </p>
+      <div class="vuln-status">
+        <div class="status-dot pending-anim" style="background:var(--text3)"></div>
+        <span style="color:var(--text3);font-size:11px;">제보 완료 · 회신 대기</span>
+      </div>
+    </div>
+
+    <!-- Mealie -->
+    <div class="vuln-card reveal">
+      <div class="vuln-top">
+        <div class="vuln-target">
+          <strong>Mealie</strong>
+          <span>v3.6.1</span>
+        </div>
+        <span class="severity sev-high">Critical</span>
+      </div>
+      <div class="vuln-cwe">Broken Access Control + JWT Forgery</div>
+      <p class="vuln-desc">
+        일반 사용자가 파일 다운로드 기능으로 서버 DB 및 JWT 서명 키 탈취 가능.
+        탈취한 키로 관리자 Access Token 위조하여 인증 우회. 선제 제보자에 의해 패치 완료.
+      </p>
+      <div class="vuln-status">
+        <div class="status-dot status-patched"></div>
+        <span style="color:var(--accent2);font-size:11px;">패치 완료 (선제 보고)</span>
+      </div>
+    </div>
+
+    <!-- Discourse -->
+    <div class="vuln-card reveal">
+      <div class="vuln-top">
+        <div class="vuln-target">
+          <strong>Discourse</strong>
+          <span>v2026.1.0</span>
+        </div>
+        <span class="severity sev-medium">Medium</span>
+      </div>
+      <div class="vuln-cwe">CWE-346 · Confused Deputy (Origin Validation)</div>
+      <p class="vuln-desc">
+        AI Artifact 기능의 postMessage 처리에서 event.origin 및 event.source 검증 누락.
+        외부 출처 페이지가 피해자 권한으로 Artifact KV API 호출 가능.
+        HackerOne 제보, 버그바운티 대상 외 회신.
+      </p>
+      <div class="vuln-status">
+        <div class="status-dot pending-anim" style="background:var(--text3)"></div>
+        <span style="color:var(--text3);font-size:11px;">제보 완료 · 패치 미완료</span>
+      </div>
+    </div>
+
+    <!-- Gnuboard -->
+    <div class="vuln-card reveal">
+      <div class="vuln-top">
+        <div class="vuln-target">
+          <strong>Gnuboard 5</strong>
+          <span>v5.6.23</span>
+        </div>
+        <span class="severity sev-medium">Medium</span>
+      </div>
+      <div class="vuln-cwe">MITM · SSL Certificate Verification Disabled</div>
+      <p class="vuln-desc">
+        Google OAuth 연동 시 CURLOPT_SSL_VERIFYPEER가 false로 설정되어 가짜 인증서 수용.
+        네트워크 MITM으로 OAuth 통신 탈취·조작 가능. KISA 제보, 위험도 낮음 평가.
+      </p>
+      <div class="vuln-status">
+        <div class="status-dot status-patched"></div>
+        <span style="color:var(--accent2);font-size:11px;">KISA 제보 완료</span>
+      </div>
+    </div>
+
+    <!-- Strapi -->
+    <div class="vuln-card reveal">
+      <div class="vuln-top">
+        <div class="vuln-target">
+          <strong>Strapi</strong>
+          <span>v5.31.3</span>
+        </div>
+        <span class="severity sev-medium">Medium</span>
+      </div>
+      <div class="vuln-cwe">CWE-1333 · ReDoS</div>
+      <p class="vuln-desc">
+        Admin Webhooks URL 검증 정규식에 중첩 반복 구조 존재.
+        특정 입력에서 과도한 백트래킹으로 CPU 급증 및 Node.js 이벤트 루프 블로킹.
+        URL 파서 기반 검증으로 패치 제안. 벤더 회신 대기 중.
+      </p>
+      <div class="vuln-status">
+        <div class="status-dot pending-anim" style="background:var(--text3)"></div>
+        <span style="color:var(--text3);font-size:11px;">제보 완료 · 회신 대기</span>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- ABOUT -->
+<section class="about-section" id="about">
+  <div class="section-label">About</div>
+  <h2 class="section-title">연구자 소개</h2>
+
+  <div class="about-grid">
+    <div class="about-text reveal">
+      <p>
+        <strong>[토스뱅크] 사이버보안 엔지니어 부트캠프</strong> 수료 후
+        오픈소스 웹서비스의 실제 취약점을 직접 발굴하고 제보하는 연구를 진행했습니다.
+      </p>
+      <p>
+        단순한 도구 사용이 아닌 <strong>소스코드 직접 분석</strong>을 통해 취약점의 근본 원인을 파악하고,
+        PoC 작성부터 패치 제안까지 전 과정을 담당합니다.
+      </p>
+      <p>
+        Path Traversal, XSS, SSRF, MITM, Origin Validation, ReDoS 등
+        <strong>OWASP Top 10 전 영역</strong>에 걸친 다양한 취약점 유형을 경험했습니다.
+      </p>
+
+      <div class="skills-list">
+        <span class="skill-tag">Burp Suite</span>
+        <span class="skill-tag">OWASP Top 10</span>
+        <span class="skill-tag">Source Code Audit</span>
+        <span class="skill-tag">JavaScript</span>
+        <span class="skill-tag">Python</span>
+        <span class="skill-tag">TypeScript</span>
+        <span class="skill-tag">Node.js</span>
+        <span class="skill-tag">SQL</span>
+        <span class="skill-tag">JWT</span>
+        <span class="skill-tag">Docker</span>
+        <span class="skill-tag">Linux</span>
+        <span class="skill-tag">Responsible Disclosure</span>
+        <span class="skill-tag">CVE Process</span>
+      </div>
+    </div>
+
+    <div class="timeline reveal">
+      <div class="timeline-item">
+        <div class="timeline-dot active">★</div>
+        <div class="timeline-content">
+          <div class="timeline-date">2026.02</div>
+          <div class="timeline-title">TinaCMS CVE Credit 등재</div>
+          <div class="timeline-body">GitHub Security Advisory GHSA-2238-xc5r-v9hj 공식 크레딧 등재</div>
+        </div>
+      </div>
+      <div class="timeline-item">
+        <div class="timeline-dot active">◆</div>
+        <div class="timeline-content">
+          <div class="timeline-date">2026.02</div>
+          <div class="timeline-title">6개 오픈소스 취약점 제보 완료</div>
+          <div class="timeline-body">TinaCMS, Directus, Paperless-ngx, Chatwoot, ERPNext, Mealie, Discourse, Gnuboard, Strapi 총 9종 이상의 취약점 발굴 및 제보</div>
+        </div>
+      </div>
+      <div class="timeline-item">
+        <div class="timeline-dot active">◆</div>
+        <div class="timeline-content">
+          <div class="timeline-date">2025 ~ 2026</div>
+          <div class="timeline-title">[토스뱅크] 사이버보안 엔지니어 부트캠프</div>
+          <div class="timeline-body">실전 중심 보안 교육 수료. 취약점 분석, 모의침투, 보안 대응 전 과정 학습</div>
+        </div>
+      </div>
+      <div class="timeline-item">
+        <div class="timeline-dot">○</div>
+        <div class="timeline-content">
+          <div class="timeline-date">진행 중</div>
+          <div class="timeline-title">추가 CVE 발급 예정</div>
+          <div class="timeline-body">복수의 취약점에 대한 CVE 번호 발급 진행 중</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CONTACT -->
+<section id="contact">
+  <div class="contact-inner">
+    <div class="section-label">Contact</div>
+    <h2 class="section-title">연락하기</h2>
+    <p class="section-desc">
+      취업 제안, 버그바운티 협업, 보안 연구 관련 문의를 환영합니다.
+    </p>
+
+    <div class="contact-links reveal">
+      <a href="https://github.com/tinacms/tinacms/security/advisories/GHSA-2238-xc5r-v9hj" target="_blank" class="contact-link">
+        <span class="contact-link-icon">GitHub</span>
+        <span class="contact-link-text">GHSA-2238-xc5r-v9hj — TinaCMS Security Advisory</span>
+        <span class="contact-link-arrow">→</span>
+      </a>
+      <a href="mailto:your@email.com" class="contact-link">
+        <span class="contact-link-icon">Email</span>
+        <span class="contact-link-text">your@email.com</span>
+        <span class="contact-link-arrow">→</span>
+      </a>
+      <a href="#" class="contact-link">
+        <span class="contact-link-icon">LinkedIn</span>
+        <span class="contact-link-text">linkedin.com/in/yourprofile</span>
+        <span class="contact-link-arrow">→</span>
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-left">© 2026 GTRY Security Research · Built with purpose.</div>
+  <div class="footer-right">CVE Credit: <span>GHSA-2238-xc5r-v9hj</span></div>
+</footer>
+
+<script>
+  // Reveal on scroll
+  const reveals = document.querySelectorAll('.reveal');
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach((e, i) => {
+      if (e.isIntersecting) {
+        setTimeout(() => e.target.classList.add('visible'), i * 80);
+        observer.unobserve(e.target);
+      }
+    });
+  }, { threshold: 0.1 });
+  reveals.forEach(el => observer.observe(el));
+
+  // Nav active state
+  const sections = document.querySelectorAll('section[id]');
+  const navLinks = document.querySelectorAll('.nav-links a');
+  window.addEventListener('scroll', () => {
+    let current = '';
+    sections.forEach(s => {
+      if (window.scrollY >= s.offsetTop - 100) current = s.id;
+    });
+    navLinks.forEach(a => {
+      a.style.color = a.getAttribute('href') === '#' + current
+        ? 'var(--accent)' : '';
+    });
+  });
+</script>
+</body>
+</html>
