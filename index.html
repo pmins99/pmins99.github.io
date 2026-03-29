@@ -306,7 +306,7 @@ section:not(:first-child) { border-top: 1px solid var(--border); }
   position: relative;
   overflow: hidden;
 }
-.proj-thumb img { width: 100%; height: 100%; object-fit: cover; position: absolute; inset: 0; }
+.proj-thumb img { width: 70%; height: 70%; object-fit: contain; position: absolute; }
 .proj-thumb-label {
   font-family: var(--mono);
   font-size: 9px;
@@ -406,9 +406,8 @@ section:not(:first-child) { border-top: 1px solid var(--border); }
 }
 @media (max-width: 768px) {
   nav { padding: 0 20px; height: 54px; }
-  .nav-logo { font-size: 15px; }
-  .nav-links { gap: 0; }
-  .nav-links a { padding: 5px 8px; font-size: 8px; letter-spacing: 0.06em; }
+  .nav-logo { font-size: 16px; }
+  .nav-links { display: none; }
   section { padding: 72px 24px; }
   .home-badge { margin-bottom: 6px; margin-right: 4px; }
   .home-name { font-size: clamp(48px, 12vw, 80px); }
@@ -578,8 +577,7 @@ section:not(:first-child) { border-top: 1px solid var(--border); }
 
     <a href="gtry.html" class="proj-card reveal">
       <div class="proj-thumb">
-        <div class="proj-thumb-icon">🔍</div>
-        <div class="proj-thumb-label">Security Research</div>
+        <img src="gtry-thumb.png" alt="GTRY 프로젝트">
       </div>
       <div class="proj-card-body">
         <div class="proj-card-tags">
