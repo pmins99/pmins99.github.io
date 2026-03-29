@@ -416,10 +416,64 @@ section:not(:first-child) { border-top: 1px solid var(--border); }
   #home { grid-template-columns: 1fr; gap: 32px; padding-top: 100px; }
   .home-right { order: 1; max-width: 100%; padding-top: 0; }
 }
+/* HAMBURGER */
+.hamburger {
+  display: none;
+  flex-direction: column;
+  justify-content: center;
+  gap: 5px;
+  width: 36px;
+  height: 36px;
+  cursor: pointer;
+  background: none;
+  border: none;
+  padding: 4px;
+}
+.hamburger span {
+  display: block;
+  width: 22px;
+  height: 2px;
+  background: var(--ink);
+  border-radius: 2px;
+  transition: all 0.3s ease;
+}
+.hamburger.open span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
+.hamburger.open span:nth-child(2) { opacity: 0; }
+.hamburger.open span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
+
+.mobile-menu {
+  display: none;
+  position: fixed;
+  inset: 0;
+  z-index: 99;
+  background: var(--bg);
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 8px;
+}
+.mobile-menu.open { display: flex; }
+.mobile-menu a {
+  font-family: var(--mono);
+  font-size: 13px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--ink2);
+  text-decoration: none;
+  padding: 18px 40px;
+  width: 240px;
+  text-align: center;
+  border: 1px solid transparent;
+  border-radius: 3px;
+  transition: all 0.2s;
+}
+.mobile-menu a:hover { color: var(--sky-deep); border-color: var(--sky-soft); background: var(--bg3); }
+
 @media (max-width: 768px) {
   nav { padding: 0 20px; height: 54px; }
   .nav-logo { font-size: 16px; }
   .nav-links { display: none; }
+  .hamburger { display: flex; }
   section { padding: 72px 24px; }
   .home-badge { margin-bottom: 6px; margin-right: 4px; }
   .home-name { font-size: clamp(48px, 12vw, 80px); }
@@ -431,6 +485,14 @@ section:not(:first-child) { border-top: 1px solid var(--border); }
 </head>
 <body>
 
+<!-- MOBILE MENU -->
+<div class="mobile-menu" id="mobileMenu">
+  <a href="#home"     onclick="closeMenu()">Home</a>
+  <a href="#about"    onclick="closeMenu()">About Me</a>
+  <a href="#projects" onclick="closeMenu()">Projects</a>
+  <a href="#contact"  onclick="closeMenu()">Contact</a>
+</div>
+
 <!-- NAV -->
 <nav>
   <a class="nav-logo" href="#home">Minseo's Portfolio</a>
@@ -440,6 +502,9 @@ section:not(:first-child) { border-top: 1px solid var(--border); }
     <li><a href="#projects">Projects</a></li>
     <li><a href="#contact">Contact</a></li>
   </ul>
+  <button class="hamburger" id="hamburger" onclick="toggleMenu()">
+    <span></span><span></span><span></span>
+  </button>
 </nav>
 
 <!-- HOME -->
@@ -449,8 +514,7 @@ section:not(:first-child) { border-top: 1px solid var(--border); }
     <div class="home-badge">Security</div>
     <div class="home-badge">AI</div>
     <h1 class="home-name">박민서</h1>
-    <p class="home-tagline">[ 보안 감각과 AI 실무를 갖춘 IT 엔지니어 ]</p>
-    <p class="home-bio">부트캠프에서 오픈소스 취약점을 분석해 CVE 크레딧을 취득했으며,<br>
+    <p class="home-bio">컴퓨터학과 졸업 예정인 박민서입니다. 부트캠프에서 오픈소스 취약점을 분석해 CVE 크레딧을 취득했으며,<br>
     현재는 AI 솔루션 개발 지원 인턴으로 실무 경험을 쌓고 있습니다.</p>
 
     <a href="https://github.com/tinacms/tinacms/security/advisories/GHSA-2238-xc5r-v9hj"
@@ -637,6 +701,17 @@ section:not(:first-child) { border-top: 1px solid var(--border); }
 </section>
 
 <script>
+function toggleMenu() {
+  const menu = document.getElementById('mobileMenu');
+  const btn  = document.getElementById('hamburger');
+  menu.classList.toggle('open');
+  btn.classList.toggle('open');
+}
+function closeMenu() {
+  document.getElementById('mobileMenu').classList.remove('open');
+  document.getElementById('hamburger').classList.remove('open');
+}
+
 const obs = new IntersectionObserver(entries => {
   entries.forEach((e, i) => {
     if (e.isIntersecting) {
