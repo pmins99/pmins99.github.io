@@ -33,7 +33,7 @@ body {
   font-family: var(--sans);
   font-size: 15px;
   line-height: 1.75;
-  font-weight: 300;
+  font-weight: 400;
 }
 
 /* ── NAV ── */
@@ -180,7 +180,7 @@ section:not(:first-child) { border-top: 1px solid var(--border); }
   line-height: 1.9;
   max-width: 500px;
   margin-bottom: 36px;
-  font-weight: 300;
+  font-weight: 400;
 }
 
 /* CVE 배지 */
@@ -340,7 +340,7 @@ section:not(:first-child) { border-top: 1px solid var(--border); }
 
 .tl-title { font-size: 16px; font-weight: 500; color: var(--ink); margin-bottom: 4px; line-height: 1.4; }
 .tl-org   { font-family: var(--mono); font-size: 11px; color: var(--sky-deep); margin-bottom: 8px; letter-spacing: 0.04em; }
-.tl-desc  { font-size: 13px; color: var(--ink2); line-height: 1.75; font-weight: 300; }
+.tl-desc  { font-size: 13px; color: var(--ink2); line-height: 1.75; font-weight: 400; }
 
 /* ── PROJECTS ── */
 #projects { background: var(--bg); }
@@ -459,13 +459,24 @@ section:not(:first-child) { border-top: 1px solid var(--border); }
 ::-webkit-scrollbar-thumb:hover { background: var(--sky-deep); }
 
 /* ── MOBILE ── */
+@media (max-width: 1024px) {
+  #home {
+    grid-template-columns: 1fr;
+    gap: 40px;
+    padding-top: 100px;
+  }
+  .home-right {
+    order: -1;
+    max-width: 260px;
+    margin: 0 auto;
+  }
+  .photo-wrap { aspect-ratio: 1/1; }
+}
+
 @media (max-width: 768px) {
   nav { padding: 0 20px; }
   .nav-links a { padding: 6px 10px; font-size: 9px; }
   section { padding: 80px 24px; }
-  #home { grid-template-columns: 1fr; padding-top: 100px; gap: 40px; }
-  .home-right { order: -1; }
-  .photo-wrap { aspect-ratio: 1/1; }
   .tl-item { grid-template-columns: 1fr; gap: 6px; }
   .project-card { grid-template-columns: 1fr; }
   .proj-num { display: none; }
