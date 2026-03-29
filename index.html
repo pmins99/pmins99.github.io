@@ -9,16 +9,16 @@
 <link href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css" rel="stylesheet">
 <style>
 :root {
-  --bg:       #ffffff;
-  --bg2:      #f0f7fc;
-  --bg3:      #e3f1fa;
-  --sky:      #89CFF0;
-  --sky-soft: #b8dff5;
-  --sky-deep: #5aace0;
-  --ink:      #1a1a2e;
-  --ink2:     #4a5568;
-  --ink3:     #a0aec0;
-  --border:   #dbeaf4;
+  --bg:       #0a0f1e;
+  --bg2:      #0f1629;
+  --bg3:      #141d35;
+  --sky:      #3b82f6;
+  --sky-soft: #1e3a6e;
+  --sky-deep: #60a5fa;
+  --ink:      #e2e8f0;
+  --ink2:     #94a3b8;
+  --ink3:     #64748b;
+  --border:   #1e2d45;
   --white:    #ffffff;
   --display: 'Pretendard', sans-serif;
   --serif:   'Pretendard', sans-serif;
@@ -42,7 +42,7 @@ nav {
   position: fixed;
   top: 0; left: 0; right: 0;
   z-index: 100;
-  background: rgba(255,255,255,0.88);
+  background: rgba(10,15,30,0.92);
   backdrop-filter: blur(16px);
   border-bottom: 1px solid var(--border);
   padding: 0 56px;
@@ -228,7 +228,7 @@ section:not(:first-child) { border-top: 1px solid var(--border); }
   text-transform: uppercase;
 }
 .badge-done { background: var(--bg3); color: var(--sky-deep); border: 1px solid var(--sky-soft); }
-.badge-ing  { background: #fff8f0; color: #c07820; border: 1px solid #f5d9a8; }
+.badge-ing  { background: rgba(251,146,60,0.12); color: #fb923c; border: 1px solid rgba(251,146,60,0.3); }
 .badge-have { background: var(--sky); color: var(--ink); border: 1px solid var(--sky-deep); font-weight: 700; }
 
 .home-right { padding-top: 8px; }
@@ -293,11 +293,11 @@ section:not(:first-child) { border-top: 1px solid var(--border); }
 .about-cat-items .tl-item:last-child { border-bottom: none; }
 
 /* 카테고리 색상 */
-.cat-edu  { background: #eef6ee; color: #2d6a2d; }
-.cat-work { background: #f5eef8; color: #7c3aa6; }
-.cat-act  { background: #fef3e8; color: #b06820; }
-.cat-vol  { background: #fde8e8; color: #a63030; }
-.cat-sec  { background: #e8f4fd; color: #1a6fa8; }
+.cat-edu  { background: rgba(16,185,129,0.12);  color: #34d399; border: 1px solid rgba(16,185,129,0.25); }
+.cat-work { background: rgba(168,85,247,0.12);  color: #c084fc; border: 1px solid rgba(168,85,247,0.25); }
+.cat-act  { background: rgba(251,146,60,0.12);  color: #fb923c; border: 1px solid rgba(251,146,60,0.25); }
+.cat-vol  { background: rgba(248,113,113,0.12); color: #f87171; border: 1px solid rgba(248,113,113,0.25); }
+.cat-sec  { background: rgba(56,189,248,0.12);  color: #38bdf8; border: 1px solid rgba(56,189,248,0.25); }
 
 .tl-date {
   font-family: var(--mono);
@@ -361,14 +361,14 @@ section:not(:first-child) { border-top: 1px solid var(--border); }
 
 /* CONTACT */
 #contact {
-  background: var(--ink);
+  background: #04080f;
   color: #fff;
   min-height: 50vh;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
 }
-#contact .section-eyebrow { color: rgba(137,207,240,0.7); }
+#contact .section-eyebrow { color: rgba(96,165,250,0.8); }
 #contact .section-eyebrow::before { background: var(--sky); }
 #contact .section-title { color: #fff; margin-bottom: 44px; }
 #contact .section-title em { color: var(--sky); }
