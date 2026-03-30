@@ -4,6 +4,13 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>MINSEO</title>
+<meta property="og:title" content="MINSEO PARK">
+<meta property="og:description" content="pmins99.github.io">
+<meta property="og:image" content="https://pmins99.github.io/og-image.png">
+<meta property="og:url" content="https://pmins99.github.io">
+<meta property="og:type" content="website">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://pmins99.github.io/og-image.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
 <link href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css" rel="stylesheet">
@@ -148,18 +155,6 @@ section:not(:first-child) { border-top: 1px solid var(--border); }
   margin-bottom: 10px;
   color: var(--ink);
 }
-.home-tagline {
-  font-family: var(--mono);
-  font-size: 13px;
-  color: var(--sky-deep);
-  border: 1px solid var(--sky-soft);
-  background: rgba(59,130,246,0.07);
-  display: inline-block;
-  padding: 8px 18px;
-  border-radius: 3px;
-  letter-spacing: 0.04em;
-  margin-bottom: 16px;
-}
 .home-bio {
   font-size: 15px;
   color: var(--ink2);
@@ -236,7 +231,7 @@ section:not(:first-child) { border-top: 1px solid var(--border); }
 #about { background: var(--bg2); }
 
 /* 카테고리 묶음 */
-.about-category { max-width: 740px; margin-bottom: 52px; }
+.about-category { max-width: 740px; margin: 0 auto 52px; }
 .about-cat-label {
   font-family: var(--mono);
   font-size: 11px;
@@ -478,8 +473,17 @@ section:not(:first-child) { border-top: 1px solid var(--border); }
   .home-badge { margin-bottom: 6px; margin-right: 4px; }
   .home-name { font-size: clamp(48px, 12vw, 80px); }
   .about-cat-items .tl-item { grid-template-columns: 1fr; gap: 6px; }
+  .tl-date br { display: none; }
+  .tl-date { white-space: nowrap; }
   .proj-grid { grid-template-columns: 1fr; }
   .proj-thumb { aspect-ratio: unset; height: 180px; }
+}
+
+/* SECTION INNER WRAPPER */
+.section-inner {
+  max-width: 1100px;
+  margin: 0 auto;
+  width: 100%;
 }
 </style>
 </head>
@@ -502,7 +506,7 @@ section:not(:first-child) { border-top: 1px solid var(--border); }
     <li><a href="#projects">Projects</a></li>
     <li><a href="#contact">Contact</a></li>
   </ul>
-  <button class="hamburger" id="hamburger" onclick="toggleMenu()">
+  <button class="hamburger" id="hamburger" onclick="toggleMenu()" aria-label="메뉴 열기/닫기">
     <span></span><span></span><span></span>
   </button>
 </nav>
@@ -534,7 +538,7 @@ section:not(:first-child) { border-top: 1px solid var(--border); }
   
   <div class="home-right reveal">
       <div class="block-title">Certification</div>
-      <div class="cert-Rlist">
+      <div class="cert-list">
         <div class="cert-row">
           <span class="cert-name">SQLD</span>
           <span class="badge badge-done">2026-03-27</span>
@@ -558,6 +562,7 @@ section:not(:first-child) { border-top: 1px solid var(--border); }
 
 <!-- ABOUT ME -->
 <section id="about">
+<div class="section-inner">
   <div class="section-eyebrow">02</div>
   <h2 class="section-title">About Me</h2>
 
@@ -644,10 +649,12 @@ section:not(:first-child) { border-top: 1px solid var(--border); }
     </div>
   </div>
 
+</div><!-- /section-inner -->
 </section>
 
 <!-- PROJECTS -->
 <section id="projects">
+<div class="section-inner">
   <div class="section-eyebrow">03</div>
   <h2 class="section-title">Projects</h2>
 
@@ -666,10 +673,12 @@ section:not(:first-child) { border-top: 1px solid var(--border); }
     </a>
 
   </div>
+</div><!-- /section-inner -->
 </section>
 
 <!-- CONTACT -->
 <section id="contact">
+<div class="section-inner">
   <div class="section-eyebrow">04</div>
   <h2 class="section-title">Contact</h2>
 
@@ -681,7 +690,7 @@ section:not(:first-child) { border-top: 1px solid var(--border); }
       </div>
       <div class="clink-arrow">→</div>
     </a>
-    <a href="https://github.com/pmins99" target="_blank" class="clink">
+    <a href="https://github.com/pmins99" target="_blank" rel="noopener noreferrer" class="clink">
       <div>
         <div class="clink-type">GitHub</div>
         <div class="clink-name">github.com/pmins99</div>
@@ -694,6 +703,7 @@ section:not(:first-child) { border-top: 1px solid var(--border); }
     <span>©minseopark</span>
     <span>pmins99.github.io</span>
   </div>
+</div><!-- /section-inner -->
 </section>
 
 <script>
@@ -722,7 +732,12 @@ const sections = document.querySelectorAll('section[id]');
 const links = document.querySelectorAll('.nav-links a');
 window.addEventListener('scroll', () => {
   let cur = '';
-  sections.forEach(s => { if (window.scrollY >= s.offsetTop - 80) cur = s.id; });
+  const atBottom = window.scrollY + window.innerHeight >= document.body.offsetHeight - 10;
+  if (atBottom) {
+    cur = sections[sections.length - 1].id;
+  } else {
+    sections.forEach(s => { if (window.scrollY >= s.offsetTop - 80) cur = s.id; });
+  }
   links.forEach(a => {
     const on = a.getAttribute('href') === '#' + cur;
     a.classList.toggle('nav-active', on);
