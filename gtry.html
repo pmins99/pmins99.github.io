@@ -9,16 +9,16 @@
 <link href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css" rel="stylesheet">
 <style>
 :root {
-  --bg:       #0a0f1e;
-  --bg2:      #0f1629;
-  --bg3:      #141d35;
-  --sky:      #3b82f6;
-  --sky-soft: #1e3a6e;
-  --sky-deep: #60a5fa;
-  --ink:      #e2e8f0;
-  --ink2:     #94a3b8;
-  --ink3:     #64748b;
-  --border:   #1e2d45;
+  --bg:       #ffffff;
+  --bg2:      #f8fafc;
+  --bg3:      #f1f5f9;
+  --sky:      #2563eb;
+  --sky-soft: #bfdbfe;
+  --sky-deep: #1d4ed8;
+  --ink:      #0f172a;
+  --ink2:     #475569;
+  --ink3:     #94a3b8;
+  --border:   #e2e8f0;
   --display:  'Pretendard', sans-serif;
   --sans:     'Pretendard', sans-serif;
   --mono:     'Space Mono', monospace;
@@ -39,7 +39,7 @@ nav {
   position: fixed;
   top: 0; left: 0; right: 0;
   z-index: 100;
-  background: rgba(10,15,30,0.92);
+  background: rgba(255,255,255,0.92);
   backdrop-filter: blur(16px);
   border-bottom: 1px solid var(--border);
   padding: 0 56px;
@@ -72,14 +72,17 @@ nav {
   text-decoration: none;
 }
 
+/* PAGE WRAPPER */
+.page-inner {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 0 56px;
+}
+
 /* HERO */
 .hero {
-  padding-top: 120px;
+  padding-top: 130px;
   padding-bottom: 80px;
-  padding-left: 56px;
-  padding-right: 56px;
-  max-width: 900px;
-  margin: 0 auto;
   border-bottom: 1px solid var(--border);
 }
 .hero-eyebrow {
@@ -96,17 +99,18 @@ nav {
 .hero-eyebrow::before { content: ''; width: 28px; height: 1px; background: var(--sky); }
 .hero-title {
   font-family: var(--display);
-  font-size: clamp(36px, 5vw, 60px);
+  font-size: clamp(36px, 5vw, 64px);
   font-weight: 400;
-  line-height: 1.1;
+  line-height: 1.05;
   color: var(--ink);
-  margin-bottom: 24px;
+  margin-bottom: 28px;
+  max-width: 800px;
 }
 .hero-meta {
   display: flex;
   flex-wrap: wrap;
   gap: 10px;
-  margin-bottom: 32px;
+  margin-bottom: 36px;
 }
 .meta-chip {
   font-family: var(--mono);
@@ -115,29 +119,25 @@ nav {
   border-radius: 100px;
   letter-spacing: 0.08em;
 }
-.chip-blue  { background: rgba(59,130,246,0.12); color: var(--sky-deep); border: 1px solid var(--sky-soft); }
-.chip-green { background: rgba(16,185,129,0.12); color: #34d399; border: 1px solid rgba(16,185,129,0.25); }
+.chip-blue  { background: rgba(37,99,235,0.10); color: var(--sky-deep); border: 1px solid var(--sky-soft); }
+.chip-green { background: rgba(16,185,129,0.12); color: #059669; border: 1px solid rgba(16,185,129,0.35); }
 .chip-gray  { background: var(--bg3); color: var(--ink2); border: 1px solid var(--border); }
 .hero-desc {
   font-size: 16px;
   color: var(--ink2);
-  line-height: 1.85;
+  line-height: 1.9;
   max-width: 680px;
 }
 
 /* THUMB */
-.thumb-wrap {
-  max-width: 900px;
-  margin: 0 auto;
-  padding: 0 56px 0;
-}
+.thumb-wrap { padding: 56px 0; border-bottom: 1px solid var(--border); }
 .thumb-img {
   width: 100%;
-  aspect-ratio: 16/7;
+  aspect-ratio: 16/6;
   background:
-    linear-gradient(rgba(59,130,246,0.06) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(59,130,246,0.06) 1px, transparent 1px),
-    linear-gradient(135deg, #0d1f3c 0%, #060e1f 100%);
+    linear-gradient(rgba(37,99,235,0.07) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(37,99,235,0.07) 1px, transparent 1px),
+    linear-gradient(135deg, #dbeafe 0%, #eff6ff 100%);
   background-size: 24px 24px, 24px 24px, 100% 100%;
   border: 1px solid var(--border);
   border-radius: 6px;
@@ -145,7 +145,6 @@ nav {
   display: flex;
   align-items: center;
   justify-content: center;
-  margin-bottom: 80px;
 }
 .thumb-img img { width: 100%; height: 100%; object-fit: cover; }
 .thumb-placeholder {
@@ -158,28 +157,28 @@ nav {
 
 /* CONTENT */
 .content {
-  max-width: 900px;
-  margin: 0 auto;
-  padding: 0 56px 120px;
+  padding: 72px 0 120px;
   display: grid;
-  grid-template-columns: 1fr 260px;
-  gap: 80px;
+  grid-template-columns: 1fr 280px;
+  gap: 72px;
   align-items: start;
 }
 .content-main h2 {
   font-family: var(--display);
-  font-size: 22px;
+  font-size: 24px;
   font-weight: 500;
   color: var(--ink);
-  margin-bottom: 16px;
-  padding-bottom: 12px;
+  margin-bottom: 20px;
+  padding-bottom: 14px;
   border-bottom: 1px solid var(--border);
 }
+.content-main > .reveal { margin-bottom: 56px; }
+.content-main > .reveal:last-child { margin-bottom: 0; }
 .content-main p {
   font-size: 15px;
   color: var(--ink2);
   line-height: 1.9;
-  margin-bottom: 28px;
+  margin-bottom: 20px;
 }
 .content-main ul {
   list-style: none;
@@ -190,7 +189,7 @@ nav {
   font-size: 15px;
   color: var(--ink2);
   line-height: 1.8;
-  padding: 6px 0;
+  padding: 8px 0;
   border-bottom: 1px solid var(--border);
   display: flex;
   align-items: baseline;
@@ -205,13 +204,13 @@ nav {
 }
 
 /* SIDEBAR */
-.sidebar {}
+.sidebar { position: sticky; top: 82px; }
 .sidebar-block {
   background: var(--bg2);
   border: 1px solid var(--border);
   border-radius: 6px;
   padding: 20px;
-  margin-bottom: 16px;
+  margin-bottom: 14px;
 }
 .sidebar-label {
   font-family: var(--mono);
@@ -234,7 +233,7 @@ nav {
   border-radius: 2px;
 }
 .stag.hl {
-  background: rgba(59,130,246,0.15);
+  background: rgba(37,99,235,0.12);
   border-color: var(--sky-soft);
   color: var(--sky-deep);
   font-weight: 700;
@@ -254,19 +253,253 @@ nav {
 .sidebar-link:hover { color: var(--sky-deep); }
 .sidebar-link span { font-family: var(--mono); font-size: 11px; color: var(--ink3); }
 
+/* PROBLEM GRID */
+.problem-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 14px;
+  margin-bottom: 28px;
+}
+.problem-box {
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 20px 22px;
+}
+.problem-box h4 {
+  font-family: var(--mono);
+  font-size: 11px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  margin-bottom: 10px;
+}
+.problem-box h4.red   { color: #dc2626; }
+.problem-box h4.green { color: #059669; }
+.problem-box p {
+  font-size: 14px;
+  color: var(--ink2);
+  line-height: 1.85;
+  margin-bottom: 0;
+}
+@media (max-width: 600px) { .problem-grid { grid-template-columns: 1fr; } }
+
+/* FLOW */
+.flow {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 0;
+  margin-bottom: 28px;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  overflow: hidden;
+}
+.flow-step {
+  padding: 20px 16px;
+  border-right: 1px solid var(--border);
+  background: var(--bg2);
+}
+.flow-step:last-child { border-right: none; }
+.flow-num {
+  font-family: var(--mono);
+  font-size: 9px;
+  letter-spacing: 0.14em;
+  color: var(--sky-deep);
+  margin-bottom: 8px;
+}
+.flow-name {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--ink);
+  margin-bottom: 8px;
+  line-height: 1.3;
+}
+.flow-desc {
+  font-size: 12px;
+  color: var(--ink2);
+  line-height: 1.7;
+}
+@media (max-width: 768px) {
+  .flow { grid-template-columns: 1fr; }
+  .flow-step { border-right: none; border-bottom: 1px solid var(--border); }
+  .flow-step:last-child { border-bottom: none; }
+}
+
+/* TECH GRID */
+.tech-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px;
+  margin-bottom: 28px;
+}
+.tech-block {
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 22px 24px;
+}
+.tech-block-title {
+  font-family: var(--mono);
+  font-size: 11px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--sky-deep);
+  margin-bottom: 12px;
+}
+.tech-block p {
+  font-size: 14px;
+  color: var(--ink2);
+  line-height: 1.85;
+  margin-bottom: 14px;
+}
+.tech-block-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-family: var(--mono);
+  font-size: 10px;
+  color: var(--sky-deep);
+  text-decoration: none;
+  letter-spacing: 0.06em;
+  margin-top: 10px;
+  transition: opacity 0.2s;
+}
+.tech-block-link:hover { opacity: 0.7; }
+.metric-pill {
+  display: inline-block;
+  font-family: var(--mono);
+  font-size: 10px;
+  color: var(--ink2);
+  background: var(--bg3);
+  border: 1px solid var(--border);
+  padding: 4px 12px;
+  border-radius: 100px;
+  letter-spacing: 0.06em;
+  margin-top: 2px;
+}
+.metric-pill.blue {
+  background: rgba(37,99,235,0.10);
+  border-color: var(--sky-soft);
+  color: var(--sky-deep);
+}
+@media (max-width: 600px) { .tech-grid { grid-template-columns: 1fr; } }
+
+/* CVE GRID */
+.cve-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px;
+  margin-bottom: 28px;
+}
+.cve-card {
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 24px 26px;
+  background: var(--bg2);
+  position: relative;
+  overflow: hidden;
+}
+.cve-card::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0;
+  width: 3px;
+  height: 100%;
+}
+.cve-card.high::before  { background: #dc2626; }
+.cve-card.medium::before { background: #d97706; }
+.cve-severity {
+  font-family: var(--mono);
+  font-size: 10px;
+  letter-spacing: 0.1em;
+  margin-bottom: 10px;
+}
+.cve-card.high   .cve-severity { color: #dc2626; }
+.cve-card.medium .cve-severity { color: #d97706; }
+.cve-id {
+  font-family: var(--mono);
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--ink);
+  margin-bottom: 4px;
+}
+.cve-score {
+  font-family: var(--mono);
+  font-size: 13px;
+  color: var(--ink3);
+  margin-bottom: 14px;
+}
+.cve-target {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--ink);
+  margin-bottom: 4px;
+}
+.cve-type {
+  font-family: var(--mono);
+  font-size: 10px;
+  color: var(--sky-deep);
+  letter-spacing: 0.08em;
+  margin-bottom: 14px;
+}
+.cve-desc {
+  font-size: 14px;
+  color: var(--ink2);
+  line-height: 1.85;
+  margin-bottom: 16px;
+}
+.cve-meta {
+  font-family: var(--mono);
+  font-size: 10px;
+  color: var(--ink3);
+  letter-spacing: 0.06em;
+  padding-top: 12px;
+  border-top: 1px solid var(--border);
+}
+@media (max-width: 600px) { .cve-grid { grid-template-columns: 1fr; } }
+
 /* REVEAL */
 .reveal { opacity: 0; transform: translateY(18px); transition: opacity 0.55s ease, transform 0.55s ease; }
 .reveal.visible { opacity: 1; transform: translateY(0); }
 
 /* SCROLLBAR */
 ::-webkit-scrollbar { width: 3px; }
-::-webkit-scrollbar-track { background: var(--bg); }
-::-webkit-scrollbar-thumb { background: var(--sky-soft); border-radius: 10px; }
+::-webkit-scrollbar-track { background: var(--bg2); }
+::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 10px; }
 
+/* TABLET */
+@media (max-width: 1024px) {
+  .content { grid-template-columns: 1fr 240px; gap: 48px; }
+  .tech-grid { grid-template-columns: 1fr; }
+  .cve-grid  { grid-template-columns: 1fr; }
+}
+
+/* MOBILE */
 @media (max-width: 768px) {
   nav { padding: 0 20px; }
-  .hero, .thumb-wrap, .content { padding-left: 24px; padding-right: 24px; }
-  .content { grid-template-columns: 1fr; gap: 48px; }
+  .page-inner { padding: 0 24px; }
+  .hero { padding-top: 96px; padding-bottom: 52px; }
+  .thumb-wrap { padding: 36px 0; }
+  .content {
+    grid-template-columns: 1fr;
+    gap: 0;
+    padding-top: 48px;
+    padding-bottom: 72px;
+  }
+  .content-main > .reveal { margin-bottom: 40px; }
+  .sidebar { position: static; margin-top: 48px; border-top: 1px solid var(--border); padding-top: 36px; }
+  .flow { grid-template-columns: 1fr 1fr; }
+  .flow-step { border-right: none; border-bottom: 1px solid var(--border); }
+  .flow-step:nth-child(odd) { border-right: 1px solid var(--border); }
+  .flow-step:last-child { border-bottom: none; }
+  .problem-grid { grid-template-columns: 1fr; }
+  .tech-grid { grid-template-columns: 1fr; }
+  .cve-grid { grid-template-columns: 1fr; }
+}
+
+@media (max-width: 480px) {
+  .flow { grid-template-columns: 1fr; }
+  .flow-step { border-right: none !important; }
+  .flow-step:last-child { border-bottom: none; }
 }
 </style>
 </head>
@@ -277,59 +510,116 @@ nav {
   <a href="index.html" class="nav-logo">Minseo's Portfolio</a>
 </nav>
 
-<!-- HERO -->
+<div class="page-inner">
 <section class="hero reveal">
   <div class="hero-eyebrow">Project 01</div>
-  <h1 class="hero-title">CMS 오픈소스 취약점 분석</h1>
+  <h1 class="hero-title">오픈소스 선제적 취약점 탐지 및 보안 대응</h1>
   <div class="hero-meta">
-    <span class="meta-chip chip-blue">CVE Credit</span>
-    <span class="meta-chip chip-green">Security Research</span>
-    <span class="meta-chip chip-gray">2025.12 — 2026.02</span>
-    <span class="meta-chip chip-gray">[토스뱅크] 사이버보안 부트캠프</span>
+    <span class="meta-chip chip-blue">SAST</span>
+    <span class="meta-chip chip-blue">Vulnerability Research</span>
+    <span class="meta-chip chip-blue">2025.12 — 2026.02</span>
+    <span class="meta-chip chip-blue">[토스뱅크] 사이버보안 부트캠프</span>
   </div>
   <p class="hero-desc">
-    <!-- 프로젝트 한 줄 소개를 여기에 작성하세요 -->
-    오픈소스 CMS 프레임워크 TinaCMS의 코드베이스를 분석하여 Path Traversal 취약점(CWE-22)을 발견하고 CVE 크레딧을 취득한 보안 연구 프로젝트입니다.
-  </p>
+    오픈소스 소프트웨어는 현대 IT 인프라의 핵심이지만 기존 보안 대응은 취약점 발견 후 패치를 기다리는 수동적인 방식에 머물러 있습니다. 패치 배포까지의 공백 동안 취약점에 무방비로 노출되는 구조적 한계가 있습니다.
+    이 프로젝트는 그 공백을 없애는 것을 목표로 했습니다. SAST 기반 정적 분석 체계를 구축하고 소스코드 분석을 통해 취약점을 선제적으로 식별했습니다. 단순 탐지에 그치지 않고 PoC 작성으로 실제 exploit 가능성을 검증하고 코드 레벨 패치 방안을 마련한 뒤 각 Security 팀에 공식 제보하여 CVE 2건을 발급받았습니다.
 </section>
 
-<!-- CONTENT -->
 <div class="content">
   <div class="content-main">
 
     <div class="reveal">
-      <h2>프로젝트 개요</h2>
-      <p>
-        <!-- 프로젝트 배경 및 목적을 작성하세요 -->
-        내용 추가
-      </p>
+      <h2>문제 정의</h2>
+      <div class="problem-grid">
+        <div class="problem-box">
+          <h4 class="red">기존 방식의 한계</h4>
+          <p>오픈소스 취약점 대응은 CVE 등록 이후 패치 적용에 의존한다. CVE 등록까지 평균 1개월, 패치 배포까지 추가 수 주가 소요되어 그 공백 동안 취약점에 무방비 상태로 노출된다.</p>
+        </div>
+        <div class="problem-box">
+          <h4 class="green">선제적 대응 목표</h4>
+          <p>패치 공개 이전 소스코드 분석을 통해 취약점을 먼저 식별한다. Exploit 가능성 기반의 우선순위 대응으로 제한된 자원을 실제 위협에 집중시킨다.</p>
+        </div>
+      </div>
     </div>
 
     <div class="reveal">
-      <h2>주요 역할 및 기여</h2>
-      <ul>
-        <li>내용 추가</li>
-        <li>내용 추가</li>
-        <li>내용 추가</li>
-      </ul>
+      <h2>분석 프로세스</h2>
+      <div class="flow">
+        <div class="flow-step">
+          <div class="flow-num">STEP 01</div>
+          <div class="flow-name">OSS 선정</div>
+          <div class="flow-desc">CMS 선정</div>
+        </div>
+        <div class="flow-step">
+          <div class="flow-num">STEP 02</div>
+          <div class="flow-name">SAST 분석</div>
+          <div class="flow-desc">Default Rule 적용<br>도구 간 탐지 격차 확인</div>
+        </div>
+        <div class="flow-step">
+          <div class="flow-num">STEP 03</div>
+          <div class="flow-name">Custom Rule</div>
+          <div class="flow-desc">미탐 패턴 기반<br>커스텀 규칙 설계</div>
+        </div>
+        <div class="flow-step">
+          <div class="flow-num">STEP 04</div>
+          <div class="flow-name">자동화</div>
+          <div class="flow-desc">LLM 기반 FP 필터링<br>파이프라인 구축</div>
+        </div>
+        <div class="flow-step">
+          <div class="flow-num">STEP 05</div>
+          <div class="flow-name">PoC · 제보</div>
+          <div class="flow-desc">재현 검증 후<br>CVE 제보 완료</div>
+        </div>
+      </div>
     </div>
 
     <div class="reveal">
-      <h2>취약점 분석 과정</h2>
-      <p>
-        <!-- 분석 방법론, 발견 과정 등을 작성하세요 -->
-        내용 추가
-      </p>
+      <h2>핵심 기술 · 담당 역할</h2>
+      <div class="tech-grid">
+        <div class="tech-block">
+          <div class="tech-block-title">취약점 분석 · PoC 작성</div>
+          <p>SAST 탐지 결과 중 실제 Exploit 가능성이 있는 취약점을 선별하고, PoC를 직접 작성하여 재현 가능성을 검증했다. 다양한 유형을 분석했으며, 코드 레벨 패치 방안까지 제시했다.</p>
+        </div>
+        <div class="tech-block">
+          <div class="tech-block-title">Custom Rule 설계</div>
+          <p>Default Ruleset이 탐지하지 못하는 패턴을 분석하여 Semgrep Custom Rule을 직접 설계했다. Path Traversal, postMessage Origin 미검증 등 일반화된 패턴으로 포착하기 어려운 취약점에 특화된 규칙을 작성했다.</p>
+          <span class="metric-pill blue">탐지율 133% 향상 (42→98건)</span>
+          <br>
+          <a href="https://github.com/teamgtry/Semgrep_Custom_Ruleset" target="_blank" class="tech-block-link">Semgrep Custom Ruleset →</a>
+        </div>
+        <div class="tech-block">
+          <div class="tech-block-title">LLM 기반 자동화 파이프라인</div>
+          <p>SAST 결과의 대량 FP를 효율적으로 처리하기 위해 LLM 기반 자동화 파이프라인을 구축했다. Pre-scan 필터링, SARIF 정규화, CoVe·RAG 기반 LLM 검증을 단계적으로 적용해 노이즈를 54.7% 감소시켰다.</p>
+          <span class="metric-pill blue">최종 검토 대상 50% 이상 축소</span>
+          <br>
+          <a href="https://github.com/teamgtry/SAST_Automation" target="_blank" class="tech-block-link">SAST Automation →</a>
+        </div>
+      </div>
     </div>
 
     <div class="reveal">
-      <h2>결과 및 성과</h2>
-      <ul>
-        <li>CVE-2026-24125 크레딧 취득</li>
-        <li>내용 추가</li>
-      </ul>
+      <h2>CVE 발급 취약점</h2>
+      <div class="cve-grid">
+        <div class="cve-card high">
+          <div class="cve-severity">● High Severity</div>
+          <div class="cve-id">CVE-2026-39942</div>
+          <div class="cve-score">CVSS 8.5</div>
+          <div class="cve-target">Directus v11.14.0</div>
+          <div class="cve-type">CWE-284 · Improper Access Control</div>
+          <div class="cve-desc">filename_disk 필드 쓰기 권한 악용으로 타 사용자 파일을 삭제하거나 RCE로 이어질 수 있는 Broken Access Control 취약점.</div>
+          <div class="cve-meta">GHSA-393c-p46r-7c95 · Directus Security Team 제보</div>
+        </div>
+        <div class="cve-card medium">
+          <div class="cve-severity">● Moderate Severity</div>
+          <div class="cve-id">CVE-2026-24125</div>
+          <div class="cve-score">CVSS 6.3</div>
+          <div class="cve-target">TinaCMS v3.3.1</div>
+          <div class="cve-type">CWE-22 · Path Traversal</div>
+          <div class="cve-desc">relativePath 입력값 검증 부재로 path.join() 호출 시 허용 경계 밖 파일에 접근 가능한 Path Traversal 취약점. Custom Rule을 통해 최초 탐지.</div>
+          <div class="cve-meta">GHSA-2238-xc5r-v9hj · TinaCMS Security Team 제보</div>
+        </div>
+      </div>
     </div>
-
   </div>
 
   <!-- SIDEBAR -->
@@ -338,10 +628,6 @@ nav {
       <div class="sidebar-label">Tech Stack</div>
       <div class="sidebar-tags">
         <span class="stag hl">CVE Credit</span>
-        <span class="stag">CWE-22</span>
-        <span class="stag">Path Traversal</span>
-        <span class="stag">Node.js</span>
-        <span class="stag">TinaCMS</span>
       </div>
     </div>
 
@@ -349,19 +635,16 @@ nav {
       <div class="sidebar-label">Links</div>
       <a href="https://github.com/tinacms/tinacms/security/advisories/GHSA-2238-xc5r-v9hj"
          target="_blank" class="sidebar-link">
-        CVE Advisory <span>→</span>
+        TinaCMS Advisory <span>→</span>
       </a>
-      <a href="https://github.com/teamgtry/SAST_Automation"
+      <a href="https://github.com/directus/directus/security/advisories/GHSA-393c-p46r-7c95"
          target="_blank" class="sidebar-link">
-        SAST Automation <span>→</span>
-      </a>
-      <a href="https://github.com/teamgtry/Semgrep_Custom_Ruleset"
-         target="_blank" class="sidebar-link">
-        Semgrep Custom Ruleset <span>→</span>
+        Directus Advisory <span>→</span>
       </a>
     </div>
   </aside>
 </div>
+</div><!-- /page-inner -->
 
 <script>
 const obs = new IntersectionObserver(entries => {

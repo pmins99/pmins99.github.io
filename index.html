@@ -16,16 +16,16 @@
 <link href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css" rel="stylesheet">
 <style>
 :root {
-  --bg:       #0a0f1e;
-  --bg2:      #0f1629;
-  --bg3:      #141d35;
-  --sky:      #3b82f6;
-  --sky-soft: #1e3a6e;
-  --sky-deep: #60a5fa;
-  --ink:      #e2e8f0;
-  --ink2:     #94a3b8;
-  --ink3:     #64748b;
-  --border:   #1e2d45;
+  --bg:       #ffffff;
+  --bg2:      #f8fafc;
+  --bg3:      #f1f5f9;
+  --sky:      #2563eb;
+  --sky-soft: #bfdbfe;
+  --sky-deep: #1d4ed8;
+  --ink:      #0f172a;
+  --ink2:     #475569;
+  --ink3:     #94a3b8;
+  --border:   #e2e8f0;
   --display: 'Pretendard', sans-serif;
   --sans:    'Pretendard', sans-serif;
   --mono:    'Space Mono', monospace;
@@ -47,7 +47,7 @@ nav {
   position: fixed;
   top: 0; left: 0; right: 0;
   z-index: 100;
-  background: rgba(10,15,30,0.92);
+  background: rgba(255,255,255,0.92);
   backdrop-filter: blur(16px);
   border-bottom: 1px solid var(--border);
   padding: 0 56px;
@@ -259,10 +259,10 @@ section:not(:first-child) { border-top: 1px solid var(--border); }
 .about-cat-items .tl-item:last-child { border-bottom: none; }
 
 /* 카테고리 색상 */
-.cat-edu  { background: rgba(16,185,129,0.12);  color: #34d399; border: 1px solid rgba(16,185,129,0.25); }
-.cat-work { background: rgba(168,85,247,0.12);  color: #c084fc; border: 1px solid rgba(168,85,247,0.25); }
-.cat-act  { background: rgba(251,146,60,0.12);  color: #fb923c; border: 1px solid rgba(251,146,60,0.25); }
-.cat-sec  { background: rgba(56,189,248,0.12);  color: #38bdf8; border: 1px solid rgba(56,189,248,0.25); }
+.cat-edu  { background: rgba(16,185,129,0.12);  color: #059669; border: 1px solid rgba(16,185,129,0.35); }
+.cat-work { background: rgba(168,85,247,0.12);  color: #7c3aed; border: 1px solid rgba(168,85,247,0.35); }
+.cat-act  { background: rgba(251,146,60,0.12);  color: #ea580c; border: 1px solid rgba(251,146,60,0.35); }
+.cat-sec  { background: rgba(37,99,235,0.10);   color: #2563eb; border: 1px solid rgba(37,99,235,0.30); }
 
 .tl-date {
   font-family: var(--mono);
@@ -301,9 +301,9 @@ section:not(:first-child) { border-top: 1px solid var(--border); }
   width: 100%;
   aspect-ratio: 16/10;
   background:
-    linear-gradient(rgba(59,130,246,0.06) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(59,130,246,0.06) 1px, transparent 1px),
-    linear-gradient(135deg, #0d1f3c 0%, #060e1f 100%);
+    linear-gradient(rgba(37,99,235,0.07) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(37,99,235,0.07) 1px, transparent 1px),
+    linear-gradient(135deg, #dbeafe 0%, #eff6ff 100%);
   background-size: 24px 24px, 24px 24px, 100% 100%;
   display: flex;
   flex-direction: column;
@@ -403,8 +403,8 @@ section:not(:first-child) { border-top: 1px solid var(--border); }
 
 /* SCROLLBAR */
 ::-webkit-scrollbar { width: 3px; }
-::-webkit-scrollbar-track { background: var(--bg); }
-::-webkit-scrollbar-thumb { background: var(--sky-soft); border-radius: 10px; }
+::-webkit-scrollbar-track { background: var(--bg2); }
+::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 10px; }
 
 /* MOBILE */
 @media (max-width: 1024px) {
@@ -442,6 +442,7 @@ section:not(:first-child) { border-top: 1px solid var(--border); }
   inset: 0;
   z-index: 99;
   background: var(--bg);
+  border-top: 1px solid var(--border);
   flex-direction: column;
   justify-content: center;
   align-items: center;
@@ -523,6 +524,10 @@ section:not(:first-child) { border-top: 1px solid var(--border); }
     <a href="https://github.com/tinacms/tinacms/security/advisories/GHSA-2238-xc5r-v9hj"
        target="_blank" class="cve-badge">
       CVE Credit · CVE-2026-24125
+    </a>
+    <a href="https://github.com/directus/directus/security/advisories/GHSA-393c-p46r-7c95"
+       target="_blank" class="cve-badge">
+      CVE Credit · CVE-2026-39942
     </a>
 
     <div class="reveal">
@@ -623,7 +628,7 @@ section:not(:first-child) { border-top: 1px solid var(--border); }
         <div class="tl-date">2023.09 —<br>2026.08</div>
         <div>
           <div class="tl-title">동덕여자대학교 / 컴퓨터학과</div>
-          <div class="tl-desc">2026.08 졸업예정</div>
+          <div class="tl-desc">재입학 및 2026.08 졸업예정</div>
         </div>
       </div>
       <div class="tl-item reveal">
